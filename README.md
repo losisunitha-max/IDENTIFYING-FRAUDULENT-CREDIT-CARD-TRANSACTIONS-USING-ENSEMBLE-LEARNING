@@ -1,0 +1,2 @@
+# IDENTIFYING-FRAUDULENT-CREDIT-CARD-TRANSACTIONS-USING-ENSEMBLE-LEARNING
+An intelligent fraud detection system that uses advanced machine learning algorithms to analyze credit card transaction data, identify unusual patterns, detect anomalies, and accurately classify fraudulent activities, helping financial institutions enhance security, reduce risks, and prevent unauthorized transactions in real time.
