@@ -1,0 +1,158 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<style>
+	.glass-panel {
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 20px;
+		padding: 2rem;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	}
+
+	.section-header {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 2rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		padding-bottom: 1rem;
+	}
+
+	.section-header h2 {
+		font-family: 'Outfit', sans-serif;
+		font-size: 1.5rem;
+		color: #fff;
+		margin: 0;
+	}
+
+	.user-table-container {
+		overflow-x: auto;
+	}
+
+	.custom-table {
+		width: 100%;
+		border-collapse: separate;
+		border-spacing: 0 8px;
+	}
+
+	.custom-table th {
+		background: rgba(255, 255, 255, 0.05);
+		color: var(--text-muted);
+		font-weight: 600;
+		text-transform: uppercase;
+		font-size: 0.75rem;
+		letter-spacing: 0.1em;
+		padding: 1rem;
+		text-align: left;
+	}
+
+	.custom-table th:first-child {
+		border-radius: 10px 0 0 10px;
+	}
+
+	.custom-table th:last-child {
+		border-radius: 0 10px 10px 0;
+	}
+
+	.custom-table tr {
+		transition: transform 0.2s;
+	}
+
+	.custom-table tr:hover {
+		transform: scale(1.005);
+	}
+
+	.custom-table td {
+		background: rgba(255, 255, 255, 0.02);
+		padding: 1rem;
+		color: var(--text-main);
+		font-size: 0.9rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.05);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	}
+
+	.custom-table td:first-child {
+		border-left: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 10px 0 0 10px;
+	}
+
+	.custom-table td:last-child {
+		border-right: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: 0 10px 10px 0;
+	}
+
+	.user-avatar {
+		width: 35px;
+		height: 35px;
+		background: linear-gradient(135deg, #10b981, #34d399);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: 700;
+		color: #fff;
+		margin-right: 10px;
+	}
+
+	.user-name-cell {
+		display: flex;
+		align-items: center;
+	}
+
+	.badge {
+		padding: 0.3rem 0.6rem;
+		border-radius: 6px;
+		font-size: 0.75rem;
+		font-weight: 600;
+		background: rgba(16, 185, 129, 0.1);
+		color: #34d399;
+	}
+</style>
+
+<div class="glass-panel">
+	<div class="section-header">
+		<h2>Registered Remote Users</h2>
+		<span class="badge">{{ objects|length }} Total</span>
+	</div>
+
+	<div class="user-table-container">
+		<table class="custom-table">
+			<thead>
+				<tr>
+					<th>User Identity</th>
+					<th>Email Address</th>
+					<th>Phone</th>
+					<th>Location</th>
+					<th>Region</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for o in objects %}
+				<tr>
+					<td>
+						<div class="user-name-cell">
+							<div class="user-avatar">{{ o.username|slice:":1"|upper }}</div>
+							<span>{{ o.username }}</span>
+						</div>
+					</td>
+					<td>{{ o.email }}</td>
+					<td>{{ o.phoneno }}</td>
+					<td>{{ o.city }}</td>
+					<td>{{ o.state }}, {{ o.country }}</td>
+					<td><span class="badge">Active</span></td>
+				</tr>
+				{% empty %}
+				<tr>
+					<td colspan="6" style="text-align: center; padding: 3rem;">No users registered yet.</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endblock %}

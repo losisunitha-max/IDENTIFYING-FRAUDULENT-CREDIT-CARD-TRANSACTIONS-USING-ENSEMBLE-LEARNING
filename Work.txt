@@ -1,0 +1,40 @@
+Identifying Fraudulent Credit Card Transactions Using Ensemble Learning
+
+
+IEEE Transaction Access on Machine Learning.Volume:12,Issue Date:23.April.2024
+
+
+Fintech, credit card fraud detection, ensemble learning, machine learning, simulated data
+set, real-world data set.
+
+
+Identifying_Fraudulent
+
+
+identifying_fraudulent
+
+
+detect_fraudulent_cc_transactions
+
+
+Detection_Of_Fraudulent_CreditCard_Transactions
+
+
+
+Members
+-------
+
+Fid	
+Trans_Date	
+CC_No	
+CC_type	
+Trans_Type	
+Amount	
+Firstname	
+Lastname	
+Gender	
+Age	
+lat	
+lon
+Transid
+Prediction

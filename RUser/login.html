@@ -1,0 +1,284 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Fraud Detection System - Login</title>
+
+	<link rel="icon" href="images/icon.png" type="image/x-icon" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700&display=swap"
+		rel="stylesheet">
+
+	<style>
+		:root {
+			--bg-color: #0b0f19;
+			--card-bg: rgba(20, 27, 45, 0.7);
+			--primary: #3b82f6;
+			--primary-hover: #2563eb;
+			--secondary: #10b981;
+			--text-main: #f8fafc;
+			--text-muted: #94a3b8;
+			--glass-border: rgba(255, 255, 255, 0.08);
+		}
+
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			background-color: var(--bg-color);
+			background-image:
+				radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
+				radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.15), transparent 25%);
+			font-family: 'Inter', sans-serif;
+			color: var(--text-main);
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+		}
+
+		.ambient-light {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			z-index: -1;
+			top: 0;
+			left: 0;
+			background: url("{% static 'bg.jpg' %}") center/cover no-repeat;
+			opacity: 0.1;
+			filter: blur(8px);
+		}
+
+		.container {
+			width: 100%;
+			max-width: 1100px;
+			padding: 2rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 4rem;
+		}
+
+		.hero-section {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 1.5rem;
+			animation: fade-in-left 0.8s ease-out;
+		}
+
+		.hero-section h1 {
+			font-family: 'Outfit', sans-serif;
+			font-size: 3rem;
+			line-height: 1.2;
+			font-weight: 700;
+			background: linear-gradient(to right, #60a5fa, #34d399);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.hero-section p {
+			font-size: 1.1rem;
+			color: var(--text-muted);
+			line-height: 1.6;
+		}
+
+		.glass-card {
+			flex: 0 0 420px;
+			background: var(--card-bg);
+			backdrop-filter: blur(16px);
+			-webkit-backdrop-filter: blur(16px);
+			border: 1px solid var(--glass-border);
+			border-radius: 24px;
+			padding: 2.5rem;
+			box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+			animation: fade-in-up 0.8s ease-out 0.2s both;
+		}
+
+		.glass-card h2 {
+			font-family: 'Outfit', sans-serif;
+			font-size: 1.8rem;
+			margin-bottom: 2rem;
+			text-align: center;
+			color: #fff;
+		}
+
+		.form-group {
+			margin-bottom: 1.5rem;
+			position: relative;
+		}
+
+		.form-group input {
+			width: 100%;
+			padding: 1rem 1.2rem;
+			background: rgba(255, 255, 255, 0.03);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 12px;
+			color: #fff;
+			font-size: 1rem;
+			font-family: 'Inter', sans-serif;
+			transition: all 0.3s ease;
+			outline: none;
+		}
+
+		.form-group input::placeholder {
+			color: var(--text-muted);
+		}
+
+		.form-group input:focus {
+			border-color: var(--primary);
+			background: rgba(59, 130, 246, 0.05);
+			box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+		}
+
+		.btn-primary {
+			width: 100%;
+			padding: 1rem;
+			background: linear-gradient(135deg, var(--primary), #2563eb);
+			color: white;
+			border: none;
+			border-radius: 12px;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: transform 0.2s, box-shadow 0.2s;
+			margin-bottom: 1.5rem;
+			font-family: 'Outfit', sans-serif;
+		}
+
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+		}
+
+		.divider {
+			display: flex;
+			align-items: center;
+			text-align: center;
+			margin: 1.5rem 0;
+			color: var(--text-muted);
+			font-size: 0.875rem;
+		}
+
+		.divider::before,
+		.divider::after {
+			content: '';
+			flex: 1;
+			border-bottom: 1px solid var(--glass-border);
+		}
+
+		.divider:not(:empty)::before {
+			margin-right: 1em;
+		}
+
+		.divider:not(:empty)::after {
+			margin-left: 1em;
+		}
+
+		.btn-outline {
+			display: block;
+			width: 100%;
+			padding: 0.875rem;
+			background: transparent;
+			color: var(--text-main);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 12px;
+			font-size: 0.95rem;
+			font-weight: 500;
+			text-decoration: none;
+			text-align: center;
+			cursor: pointer;
+			transition: all 0.2s;
+			margin-bottom: 0.75rem;
+			font-family: 'Inter', sans-serif;
+		}
+
+		.btn-outline:hover {
+			background: rgba(255, 255, 255, 0.05);
+			border-color: rgba(255, 255, 255, 0.2);
+		}
+
+		@keyframes fade-in-left {
+			from {
+				opacity: 0;
+				transform: translateX(-30px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateX(0);
+			}
+		}
+
+		@keyframes fade-in-up {
+			from {
+				opacity: 0;
+				transform: translateY(30px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@media (max-width: 900px) {
+			.container {
+				flex-direction: column;
+				text-align: center;
+			}
+
+			.hero-section p {
+				margin: 0 auto;
+				max-width: 500px;
+			}
+
+			.glass-card {
+				width: 100%;
+				max-width: 420px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="ambient-light"></div>
+
+	<div class="container">
+		<div class="hero-section">
+			<h1>Advanced AI Fraud Detection</h1>
+			<p>Empowering Fintech with Ensemble Learning. Secure your infrastructure, detect anomalies in real-time, and
+				prevent credit card fraud before it happens.</p>
+		</div>
+
+		<div class="glass-card">
+			<h2>User Portal</h2>
+			<form method="POST" role="form">
+				{% csrf_token %}
+				<div class="form-group">
+					<input type="text" name="username" placeholder="Username" required autocomplete="off">
+				</div>
+				<div class="form-group">
+					<input type="password" name="password" placeholder="Password" required>
+				</div>
+
+				<button type="submit" name="submit1" class="btn-primary">Sign In</button>
+			</form>
+
+			<div class="divider">or continue with</div>
+
+			<a href="{% url 'Register1' %}" class="btn-outline">Create New Account</a>
+			<a href="{% url 'serviceproviderlogin' %}" class="btn-outline">Service Provider Login</a>
+		</div>
+	</div>
+</body>
+
+</html>

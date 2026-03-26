@@ -1,0 +1,170 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<style>
+     .analytics-container {
+          display: grid;
+          grid-template-columns: 240px 1fr;
+          gap: 2rem;
+          min-height: 600px;
+     }
+
+     .glass-sidebar {
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 20px;
+          padding: 2rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+     }
+
+     .sidebar-title {
+          font-family: 'Outfit', sans-serif;
+          font-weight: 600;
+          font-size: 0.9rem;
+          color: var(--text-muted);
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          margin-bottom: 1rem;
+     }
+
+     .chart-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          padding: 1rem 1.2rem;
+          border-radius: 12px;
+          color: var(--text-muted);
+          text-decoration: none !important;
+          font-weight: 500;
+          transition: all 0.3s;
+          border: 1px solid transparent;
+          background: rgba(255, 255, 255, 0.02);
+     }
+
+     .chart-btn:hover {
+          background: rgba(255, 255, 255, 0.05);
+          color: #fff;
+          transform: translateX(5px);
+     }
+
+     .chart-btn.active {
+          background: rgba(16, 185, 129, 0.1);
+          border-color: rgba(16, 185, 129, 0.3);
+          color: #34d399;
+     }
+
+     .glass-main {
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 20px;
+          padding: 2.5rem;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          display: flex;
+          flex-direction: column;
+     }
+
+     .chart-header {
+          margin-bottom: 2rem;
+     }
+
+     .chart-header h2 {
+          font-family: 'Outfit', sans-serif;
+          font-size: 1.5rem;
+          color: #fff;
+          margin: 0;
+     }
+
+     #chartContainer {
+          flex: 1;
+          width: 100%;
+          min-height: 450px;
+          border-radius: 12px;
+          overflow: hidden;
+     }
+</style>
+
+<div class="analytics-container">
+     <div class="glass-sidebar">
+          <span class="sidebar-title">Traffic Metrics</span>
+
+          <a href="{% url 'likeschart1' 'bar' %}" class="chart-btn {% if like_chart == 'bar' %}active{% endif %}">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="18" y="3" width="4" height="18"></rect>
+                    <rect x="10" y="8" width="4" height="13"></rect>
+                    <rect x="2" y="13" width="4" height="8"></rect>
+               </svg>
+               Bar Analysis
+          </a>
+
+          <a href="{% url 'likeschart1' 'column' %}" class="chart-btn {% if like_chart == 'column' %}active{% endif %}">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 20V10"></path>
+                    <path d="M18 20V4"></path>
+                    <path d="M6 20v-4"></path>
+               </svg>
+               Column Map
+          </a>
+
+          <a href="{% url 'likeschart1' 'area' %}" class="chart-btn {% if like_chart == 'area' %}active{% endif %}">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 17L13.5 10.5L9 14.5L2 9V12L9 17.5L13.5 13.5L22 20V17Z"></path>
+               </svg>
+               Ratio Spread
+          </a>
+     </div>
+
+     <div class="glass-main">
+          <div class="chart-header">
+               <h2>Traffic Composition ({{ like_chart|capfirst }})</h2>
+          </div>
+          <div id="chartContainer"></div>
+     </div>
+</div>
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script>
+     window.onload = function () {
+          var chart = new CanvasJS.Chart("chartContainer", {
+               animationEnabled: true,
+               backgroundColor: "transparent",
+               theme: "dark2",
+               axisX: {
+                    labelFontColor: "#94a3b8",
+                    gridThickness: 0,
+                    lineColor: "rgba(255,255,255,0.1)"
+               },
+               axisY: {
+                    labelFontColor: "#94a3b8",
+                    gridColor: "rgba(255,255,255,0.05)",
+                    lineColor: "rgba(255,255,255,0.1)",
+                    suffix: "%"
+               },
+               data: [{
+                    indexLabelFontColor: "#cbd5e1",
+                    indexLabelFontSize: 12,
+                    type: "{{ like_chart }}",
+            {% if like_chart == "bar" or like_chart == "column" %}
+     color: "#10b981",
+          {% elif like_chart == "area" %}
+     color: "rgba(16, 185, 129, 0.6)",
+          {% endif %}
+     yValueFormatString: "##0.00\"%\"",
+          indexLabel: "{y}",
+               dataPoints: [
+                    {% for o in form %}
+     { y: { { o.dcount } }, label: "{{o.names}}" },
+     {% endfor %}
+            ]
+        }]
+    });
+     chart.render();
+}
+</script>
+
+{% endblock %}

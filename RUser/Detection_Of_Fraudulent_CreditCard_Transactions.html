@@ -1,0 +1,668 @@
+{% extends 'RUser/design.html' %}
+{% block userblock %}
+
+<style>
+  .detection-container {
+    background: rgba(20, 27, 45, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .detection-container h2 {
+    font-family: 'Outfit', sans-serif;
+    color: #fff;
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+  }
+
+  /* AI Fill Banner */
+  .ai-fill-banner {
+    background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(16,185,129,0.12));
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .ai-fill-banner:hover {
+    background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(16,185,129,0.18));
+    border-color: rgba(59,130,246,0.4);
+    transform: translateY(-1px);
+  }
+
+  .ai-fill-banner .ai-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #3b82f6, #10b981);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+  }
+
+  .ai-fill-banner .ai-text h4 {
+    color: #e2e8f0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 3px 0;
+  }
+
+  .ai-fill-banner .ai-text p {
+    color: rgba(255,255,255,0.45);
+    font-size: 12px;
+    margin: 0;
+  }
+
+  .ai-fill-banner .ai-arrow {
+    margin-left: auto;
+    color: #3b82f6;
+    font-size: 18px;
+    transition: transform 0.2s;
+  }
+
+  .ai-fill-banner:hover .ai-arrow {
+    transform: translateX(3px);
+  }
+
+  /* AI Chat Panel */
+  .ai-chat-panel {
+    display: none;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    animation: slideDown 0.3s ease;
+  }
+
+  .ai-chat-panel.open {
+    display: block;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ai-chat-header {
+    background: rgba(59,130,246,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ai-chat-header h4 {
+    color: #e2e8f0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ai-chat-header h4 .dot {
+    width: 7px;
+    height: 7px;
+    background: #34d399;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #34d399;
+  }
+
+  .ai-chat-close {
+    color: rgba(255,255,255,0.4);
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.2s;
+  }
+
+  .ai-chat-close:hover { color: #fff; }
+
+  .ai-chat-body {
+    padding: 16px 20px;
+    max-height: 280px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ai-chat-body::-webkit-scrollbar { width: 4px; }
+  .ai-chat-body::-webkit-scrollbar-track { background: transparent; }
+  .ai-chat-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+  .chat-msg {
+    max-width: 90%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .chat-msg.bot {
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.2);
+    color: #cbd5e1;
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+  }
+
+  .chat-msg.user {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+  }
+
+  .chat-msg.success {
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.25);
+    color: #6ee7b7;
+    align-self: flex-start;
+  }
+
+  .ai-chat-footer {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    gap: 8px;
+  }
+
+  .ai-chat-footer input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 10px 16px;
+    color: #fff;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border 0.2s;
+  }
+
+  .ai-chat-footer input:focus {
+    border-color: #3b82f6;
+  }
+
+  .ai-chat-footer button {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-chat-footer button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(59,130,246,0.4);
+  }
+
+  /* Quick paste samples */
+  .quick-samples {
+    padding: 0 20px 12px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .sample-chip {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 5px 12px;
+    color: rgba(255,255,255,0.55);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sample-chip:hover {
+    background: rgba(59,130,246,0.15);
+    border-color: rgba(59,130,246,0.3);
+    color: #93c5fd;
+  }
+
+  /* Filled field highlight animation */
+  .form-group input.ai-filled,
+  .form-group select.ai-filled {
+    border-color: #10b981 !important;
+    background: rgba(16,185,129,0.06) !important;
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.1) !important;
+    animation: fillPulse 0.6s ease;
+  }
+
+  @keyframes fillPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .form-group select option {
+    background: #141b2d;
+    color: #fff;
+  }
+
+  .submit-container {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .btn-predict {
+    padding: 1rem 3rem;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .btn-predict:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+  }
+
+  .result-box {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .result-box.safe {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .result-title {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+  }
+
+  .result-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ef4444;
+  }
+</style>
+
+<div class="detection-container">
+  <h2>Enter Transaction Details for Prediction</h2>
+
+  <!-- AI Auto-Fill Banner -->
+  <div class="ai-fill-banner" onclick="toggleAIChat()">
+    <div class="ai-icon">🤖</div>
+    <div class="ai-text">
+      <h4>AI Auto-Fill — Paste all info and I'll fill the form</h4>
+      <p>Just describe the transaction in plain text, I'll extract and fill every field for you</p>
+    </div>
+    <span class="ai-arrow">→</span>
+  </div>
+
+  <!-- AI Chat Panel -->
+  <div class="ai-chat-panel" id="aiChatPanel">
+    <div class="ai-chat-header">
+      <h4><span class="dot"></span> FraudGuard AI Assistant</h4>
+      <span class="ai-chat-close" onclick="toggleAIChat()">✕</span>
+    </div>
+
+    <div class="ai-chat-body" id="aiChatBody">
+      <div class="chat-msg bot">
+        👋 Hi! Paste your transaction details and I'll auto-fill all the form fields instantly.<br><br>
+        <strong>You can paste like:</strong><br>
+        <em>"Fid: 10.42.0.151-10.42.0.1-5732-53-17, Date: 21-04-22, CC: 4512830000000000000, CC type: Visa, Trans type: entertainment, Amount: 2407.24, Name: Monica Cohen, Gender: Female, Age: 42, Lat: 39.89, Lon: -79.78, TransID: 720000"</em><br><br>
+        Or just dump all the data in any format — I'll figure it out! 🚀
+      </div>
+    </div>
+
+    <div class="quick-samples">
+      <span class="sample-chip" onclick="useSample(1)">📋 Sample 1</span>
+      <span class="sample-chip" onclick="useSample(2)">📋 Sample 2</span>
+      <span class="sample-chip" onclick="useSample(3)">📋 Sample 3</span>
+    </div>
+
+    <div class="ai-chat-footer">
+      <input type="text" id="aiInput" placeholder="Paste transaction details here..." onkeypress="if(event.key==='Enter') parseAndFill()">
+      <button onclick="parseAndFill()" title="Send">➤</button>
+    </div>
+  </div>
+
+  <form role="form" method="POST" id="detectionForm">
+    {% csrf_token %}
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Fid</label>
+        <input type="text" name="Fid" id="f_fid" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Transaction Date</label>
+        <input type="text" name="Trans_Date" id="f_date" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Credit Card No</label>
+        <input type="text" name="CC_No" id="f_ccno" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Credit Card Type</label>
+        <input type="text" name="CC_type" id="f_cctype" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Transaction Type</label>
+        <input type="text" name="Trans_Type" id="f_transtype" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Amount ($)</label>
+        <input type="text" name="Amount" id="f_amount" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" name="Firstname" id="f_fname" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" name="Lastname" id="f_lname" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select name="Gender" id="f_gender" required>
+          <option value="" disabled selected>--- Select ---</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Age</label>
+        <input type="number" name="Age" id="f_age" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Latitude (lat)</label>
+        <input type="text" name="lat" id="f_lat" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Longitude (lon)</label>
+        <input type="text" name="lon" id="f_lon" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Transaction ID</label>
+        <input type="text" name="Transid" id="f_transid" required autocomplete="off">
+      </div>
+    </div>
+
+    <div class="submit-container">
+      <button type="submit" name="submit" class="btn-predict">Analyze Transaction</button>
+    </div>
+  </form>
+
+  {% if objs %}
+  <div class="result-box {% if 'Not Found' in objs %}safe{% endif %}">
+    <div class="result-title">Detection Result</div>
+    <div class="result-value" {% if 'Not Found' in objs %}style="color:#10b981"{% endif %}>{{ objs }}</div>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+// Toggle AI Chat Panel
+function toggleAIChat() {
+  const panel = document.getElementById('aiChatPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    document.getElementById('aiInput').focus();
+  }
+}
+
+// Sample data
+const samples = {
+  1: "Fid: 10.42.0.151-10.42.0.1-5732-53-17, Date: 21-04-22, CC No: 4512830000000000000, CC Type: First Wealth Credit Card, Transaction Type: entertainment, Amount: 2407.24, First Name: Monica, Last Name: Cohen, Gender: Female, Age: 42, Latitude: 39.8936, Longitude: -79.7856, Transaction ID: 720000",
+  2: "Fid: 175.100.207.231-10.42.0.211-80-37025-6, Date: 14-02-23, CC No: 6011390000000000, CC Type: Single Currency Card, Trans Type: home, Amount: 311.96, Firstname: Natalie, Lastname: Watson, Gender: Female, Age: 61, Lat: 34.0443, Lon: -118.2509, TransID: 420850",
+  3: "Fid: 184.86.36.20-10.42.0.151-443-33700-6, Date: 10-09-21, CC: 3600000000000000, Card Type: EaseMyTrip, Type: entertainment, Amount: 140.98, Name: David Everett, Gender: Male, Age: 62, Lat: 41.0001, Lon: -78.2357, TransID: 744000"
+};
+
+function useSample(n) {
+  document.getElementById('aiInput').value = samples[n];
+  parseAndFill();
+}
+
+// Add user message to chat
+function addChatMsg(text, type) {
+  const body = document.getElementById('aiChatBody');
+  const msg = document.createElement('div');
+  msg.className = 'chat-msg ' + type;
+  msg.innerHTML = text;
+  body.appendChild(msg);
+  body.scrollTop = body.scrollHeight;
+}
+
+// Highlight filled field
+function fillField(id, value) {
+  const el = document.getElementById(id);
+  if (!el || !value) return;
+
+  if (el.tagName === 'SELECT') {
+    // Match select option
+    for (let opt of el.options) {
+      if (opt.value.toLowerCase() === value.toLowerCase()) {
+        el.value = opt.value;
+        break;
+      }
+    }
+  } else {
+    el.value = value;
+  }
+
+  el.classList.add('ai-filled');
+  setTimeout(() => el.classList.remove('ai-filled'), 3000);
+}
+
+// Smart Parser — extracts fields from any text format
+function parseAndFill() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  addChatMsg(text, 'user');
+  input.value = '';
+
+  // Normalize text
+  const t = text.replace(/\n/g, ', ');
+
+  let filled = 0;
+
+  // --- FID ---
+  let fid = extractVal(t, /(?:fid|flow\s*id|f_id)\s*[:=]\s*([^\s,]+)/i);
+  // Also try IP-like patterns as FID
+  if (!fid) {
+    const ipMatch = t.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}-\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}[\w\-\.]*)/);
+    if (ipMatch) fid = ipMatch[1];
+  }
+  if (fid) { fillField('f_fid', fid); filled++; }
+
+  // --- DATE ---
+  let date = extractVal(t, /(?:date|trans[_ ]?date|transaction\s*date)\s*[:=]\s*([\d\-\/\.]+)/i);
+  if (!date) {
+    const dateMatch = t.match(/\b(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4})\b/);
+    if (dateMatch) date = dateMatch[1];
+  }
+  if (date) { fillField('f_date', date); filled++; }
+
+  // --- CC NUMBER ---
+  let ccno = extractVal(t, /(?:cc\s*no|credit\s*card\s*no|cc\s*number|card\s*no|cc)\s*[:=]\s*(\d[\d\s]{10,})/i);
+  if (!ccno) {
+    const ccMatch = t.match(/\b(\d{13,19})\b/);
+    if (ccMatch) ccno = ccMatch[1];
+  }
+  if (ccno) { fillField('f_ccno', ccno.replace(/\s/g, '')); filled++; }
+
+  // --- CC TYPE ---
+  let cctype = extractVal(t, /(?:cc\s*type|card\s*type|credit\s*card\s*type|cc_type)\s*[:=]\s*([^,\n]+)/i);
+  if (cctype) { fillField('f_cctype', cctype.trim()); filled++; }
+
+  // --- TRANS TYPE ---
+  let transtype = extractVal(t, /(?:trans(?:action)?\s*type|trans[_ ]type|type\s*of\s*transaction)\s*[:=]\s*([^,\n]+)/i);
+  if (!transtype) {
+    // Try to match known transaction types
+    const types = ['entertainment', 'home', 'personal_care', 'health_fitness', 'food_dining', 'gas_transport', 'grocery_net', 'grocery_pos', 'kids_pets', 'misc_net', 'misc_pos', 'shopping_net', 'shopping_pos', 'travel'];
+    for (let tp of types) {
+      if (t.toLowerCase().includes(tp)) { transtype = tp; break; }
+    }
+  }
+  if (transtype) { fillField('f_transtype', transtype.trim()); filled++; }
+
+  // --- AMOUNT ---
+  let amount = extractVal(t, /(?:amount|amt|price|total)\s*[:=]\s*\$?([\d,.]+)/i);
+  if (amount) { fillField('f_amount', amount.replace(/,/g, '')); filled++; }
+
+  // --- NAME ---
+  let fname = extractVal(t, /(?:first\s*name|firstname|first)\s*[:=]\s*([a-zA-Z]+)/i);
+  let lname = extractVal(t, /(?:last\s*name|lastname|last|surname)\s*[:=]\s*([a-zA-Z]+)/i);
+
+  // Try "Name: First Last" pattern
+  if (!fname || !lname) {
+    const nameMatch = t.match(/(?:name)\s*[:=]\s*([a-zA-Z]+)\s+([a-zA-Z]+)/i);
+    if (nameMatch) {
+      if (!fname) fname = nameMatch[1];
+      if (!lname) lname = nameMatch[2];
+    }
+  }
+  if (fname) { fillField('f_fname', fname.trim()); filled++; }
+  if (lname) { fillField('f_lname', lname.trim()); filled++; }
+
+  // --- GENDER ---
+  let gender = extractVal(t, /(?:gender|sex)\s*[:=]\s*(male|female|m|f)/i);
+  if (!gender) {
+    if (/\bmale\b/i.test(t) && !/\bfemale\b/i.test(t)) gender = 'Male';
+    else if (/\bfemale\b/i.test(t)) gender = 'Female';
+  }
+  if (gender) {
+    if (gender.toLowerCase() === 'm') gender = 'Male';
+    if (gender.toLowerCase() === 'f') gender = 'Female';
+    gender = gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase();
+    fillField('f_gender', gender); filled++;
+  }
+
+  // --- AGE ---
+  let age = extractVal(t, /(?:age)\s*[:=]\s*(\d{1,3})/i);
+  if (age) { fillField('f_age', age); filled++; }
+
+  // --- LATITUDE ---
+  let lat = extractVal(t, /(?:lat(?:itude)?)\s*[:=]\s*(-?[\d.]+)/i);
+  if (lat) { fillField('f_lat', lat); filled++; }
+
+  // --- LONGITUDE ---
+  let lon = extractVal(t, /(?:lon(?:gitude)?|lng)\s*[:=]\s*(-?[\d.]+)/i);
+  if (lon) { fillField('f_lon', lon); filled++; }
+
+  // --- TRANS ID ---
+  let transid = extractVal(t, /(?:trans(?:action)?\s*id|transid|trans_id|tid)\s*[:=]\s*(\d+)/i);
+  if (transid) { fillField('f_transid', transid); filled++; }
+
+  // Response
+  const total = 13;
+  if (filled >= 10) {
+    addChatMsg('✅ <strong>All done!</strong> Filled <strong>' + filled + '/' + total + '</strong> fields automatically. Check the form below — you can review and click <strong>Analyze Transaction</strong> to run the prediction! 🚀', 'success');
+  } else if (filled >= 5) {
+    addChatMsg('🔶 Filled <strong>' + filled + '/' + total + '</strong> fields. Some fields need manual input. Please check the empty fields below.', 'bot');
+  } else if (filled > 0) {
+    addChatMsg('⚠️ Only filled <strong>' + filled + '/' + total + '</strong> fields. Try providing more details, like: <em>Fid, Date, CC No, CC Type, Trans Type, Amount, Name, Gender, Age, Lat, Lon, TransID</em>', 'bot');
+  } else {
+    addChatMsg("❌ Couldn't extract any fields. Please try a format like:<br><em>\"Fid: xxx, Date: xx-xx-xx, CC No: 1234..., CC Type: Visa, Trans Type: shopping, Amount: 100, Name: John Doe, Gender: Male, Age: 30, Lat: 40.71, Lon: -74.00, TransID: 12345\"</em>", 'bot');
+  }
+
+  // Scroll to form
+  if (filled > 0) {
+    setTimeout(() => {
+      document.getElementById('detectionForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 800);
+  }
+}
+
+// Helper: extract value from regex
+function extractVal(text, regex) {
+  const m = text.match(regex);
+  return m ? m[1] : null;
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<style>
+	.glass-panel {
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 20px;
+		padding: 2.5rem;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	.section-header {
+		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	.section-header h2 {
+		font-family: 'Outfit', sans-serif;
+		font-size: 1.8rem;
+		color: #fff;
+		margin-bottom: 0.5rem;
+	}
+
+	.section-header p {
+		color: var(--text-muted);
+		font-size: 0.95rem;
+	}
+
+	.ratio-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.ratio-card {
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: 16px;
+		padding: 2rem;
+		text-align: center;
+		transition: transform 0.3s ease;
+	}
+
+	.ratio-card:hover {
+		transform: translateY(-5px);
+		background: rgba(255, 255, 255, 0.06);
+	}
+
+	.ratio-label {
+		color: var(--text-muted);
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		margin-bottom: 1rem;
+		display: block;
+	}
+
+	.ratio-value {
+		font-family: 'Outfit', sans-serif;
+		font-size: 3rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+		background: linear-gradient(135deg, #fff, #94a3b8);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.ratio-percentage {
+		font-size: 1.2rem;
+		vertical-align: super;
+		margin-left: 2px;
+	}
+
+	.status-indicator {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.4rem 1rem;
+		border-radius: 20px;
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+
+	.status-indicator.detected {
+		background: rgba(239, 68, 68, 0.1);
+		color: #f87171;
+	}
+
+	.status-indicator.safe {
+		background: rgba(16, 185, 129, 0.1);
+		color: #34d399;
+	}
+
+	.indicator-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+	}
+
+	.dot-red {
+		background: #ef4444;
+	}
+
+	.dot-green {
+		background: #10b981;
+	}
+</style>
+
+<div class="glass-panel">
+	<div class="section-header">
+		<h2>Traffic Composition Ratio</h2>
+		<p>Real-time analysis of fraudulent vs legitimate transaction percentages.</p>
+	</div>
+
+	<div class="ratio-grid">
+		{% for object in objs %}
+		<div class="ratio-card">
+			<span class="ratio-label">{{ object.names }}</span>
+			<div class="ratio-value">
+				{{ object.ratio|floatformat:1 }}<span class="ratio-percentage">%</span>
+			</div>
+
+			<div
+				class="status-indicator {% if 'Found' in object.names and 'Not' not in object.names %}detected{% else %}safe{% endif %}">
+				<span
+					class="indicator-dot {% if 'Found' in object.names and 'Not' not in object.names %}dot-red{% else %}dot-green{% endif %}"></span>
+				<span>System Verified</span>
+			</div>
+		</div>
+		{% empty %}
+		<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">
+			No ratio data available. Please process transactions first.
+		</div>
+		{% endfor %}
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,250 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Service Provider - Login</title>
+
+	<link rel="icon" href="images/icon.png" type="image/x-icon" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700&display=swap"
+		rel="stylesheet">
+
+	<style>
+		:root {
+			--bg-color: #0b0f19;
+			--card-bg: rgba(20, 27, 45, 0.7);
+			--primary: #10b981;
+			/* Green for service provider to differentiate */
+			--primary-hover: #059669;
+			--secondary: #3b82f6;
+			--text-main: #f8fafc;
+			--text-muted: #94a3b8;
+			--glass-border: rgba(255, 255, 255, 0.08);
+		}
+
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			background-color: var(--bg-color);
+			background-image:
+				radial-gradient(circle at 85% 50%, rgba(16, 185, 129, 0.15), transparent 25%),
+				radial-gradient(circle at 15% 30%, rgba(59, 130, 246, 0.15), transparent 25%);
+			font-family: 'Inter', sans-serif;
+			color: var(--text-main);
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.ambient-light {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			z-index: -1;
+			top: 0;
+			left: 0;
+			background: url("{% static 'bg.jpg' %}") center/cover no-repeat;
+			opacity: 0.1;
+			filter: blur(8px);
+		}
+
+		.header-content {
+			text-align: center;
+			margin-bottom: 3rem;
+			animation: fade-in-down 0.8s ease-out;
+			max-width: 800px;
+			padding: 0 20px;
+		}
+
+		.header-content h1 {
+			font-family: 'Outfit', sans-serif;
+			font-size: 2.5rem;
+			margin-bottom: 1rem;
+			background: linear-gradient(to right, #34d399, #60a5fa);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.header-content p {
+			color: var(--text-muted);
+			line-height: 1.6;
+		}
+
+		.glass-card {
+			width: 100%;
+			max-width: 420px;
+			background: var(--card-bg);
+			backdrop-filter: blur(16px);
+			-webkit-backdrop-filter: blur(16px);
+			border: 1px solid var(--glass-border);
+			border-radius: 24px;
+			padding: 2.5rem;
+			box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+			animation: fade-in-up 0.8s ease-out 0.2s both;
+		}
+
+		.glass-card h2 {
+			font-family: 'Outfit', sans-serif;
+			font-size: 1.5rem;
+			margin-bottom: 2rem;
+			text-align: center;
+			color: #fff;
+		}
+
+		.form-group {
+			margin-bottom: 1.5rem;
+		}
+
+		.form-group input {
+			width: 100%;
+			padding: 1rem 1.2rem;
+			background: rgba(255, 255, 255, 0.03);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 12px;
+			color: #fff;
+			font-size: 1rem;
+			font-family: 'Inter', sans-serif;
+			transition: all 0.3s ease;
+			outline: none;
+		}
+
+		.form-group input:focus {
+			border-color: var(--primary);
+			background: rgba(16, 185, 129, 0.05);
+			box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+		}
+
+		.btn-primary {
+			width: 100%;
+			padding: 1rem;
+			background: linear-gradient(135deg, var(--primary), #059669);
+			color: white;
+			border: none;
+			border-radius: 12px;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: transform 0.2s, box-shadow 0.2s;
+			margin-bottom: 1.5rem;
+			font-family: 'Outfit', sans-serif;
+		}
+
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+		}
+
+		.divider {
+			display: flex;
+			align-items: center;
+			text-align: center;
+			margin: 1.5rem 0;
+			color: var(--text-muted);
+			font-size: 0.875rem;
+		}
+
+		.divider::before,
+		.divider::after {
+			content: '';
+			flex: 1;
+			border-bottom: 1px solid var(--glass-border);
+		}
+
+		.divider:not(:empty)::before {
+			margin-right: 1em;
+		}
+
+		.divider:not(:empty)::after {
+			margin-left: 1em;
+		}
+
+		.btn-outline {
+			display: block;
+			width: 100%;
+			padding: 0.875rem;
+			background: transparent;
+			color: var(--text-main);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 12px;
+			font-size: 0.95rem;
+			font-weight: 500;
+			text-decoration: none;
+			text-align: center;
+			cursor: pointer;
+			transition: all 0.2s;
+			font-family: 'Inter', sans-serif;
+		}
+
+		.btn-outline:hover {
+			background: rgba(255, 255, 255, 0.05);
+			border-color: rgba(255, 255, 255, 0.2);
+		}
+
+		@keyframes fade-in-down {
+			from {
+				opacity: 0;
+				transform: translateY(-30px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@keyframes fade-in-up {
+			from {
+				opacity: 0;
+				transform: translateY(30px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="ambient-light"></div>
+
+	<div class="header-content">
+		<h1>Service Provider Security Portal</h1>
+		<p>Fintech, credit card fraud detection, ensemble learning, machine learning, simulated data set, real-world
+			data set.</p>
+	</div>
+
+	<div class="glass-card">
+		<h2>Provider Login</h2>
+		<form method="POST" role="form">
+			{% csrf_token %}
+			<div class="form-group">
+				<input type="text" name="username" placeholder="Provider ID / Username" required autocomplete="off">
+			</div>
+			<div class="form-group">
+				<input type="password" name="password" placeholder="Key / Password" required>
+			</div>
+
+			<button type="submit" name="submit1" class="btn-primary">Secure Access</button>
+		</form>
+
+		<div class="divider">or return to</div>
+
+		<a href="{% url 'login' %}" class="btn-outline">User Login Portal</a>
+	</div>
+</body>
+
+</html>
